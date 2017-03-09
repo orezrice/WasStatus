@@ -1,4 +1,4 @@
-package com.mamatzava;
+package com.whatstatus;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
