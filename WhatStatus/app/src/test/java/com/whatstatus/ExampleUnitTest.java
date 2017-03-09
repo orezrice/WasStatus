@@ -1,4 +1,4 @@
-package com.mamatzava;
+package com.whatstatus;
 
 import org.junit.Test;
 
