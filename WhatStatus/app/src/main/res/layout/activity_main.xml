@@ -43,7 +43,6 @@
                 android:textColor="@android:color/holo_red_dark"
                 android:text="חסרים"/>
 
-
             <ListView
                 android:divider="#00000000"
                 android:id="@+id/outhouselist"
