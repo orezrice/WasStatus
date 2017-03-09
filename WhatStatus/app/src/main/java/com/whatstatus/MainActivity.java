@@ -1,33 +1,18 @@
 package com.whatstatus;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
-import android.nfc.Tag;
-import android.nfc.tech.Ndef;
-import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
-
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG = "NfcCard";
-
     private NfcAdapter mNfcAdapter;
-    private Tag detectedTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
     private void handleIntent(Intent intent) {
         if(intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED) ||
                 intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED)){
-            Tag test = intent.getParcelableExtra(mNfcAdapter.EXTRA_TAG);
             byte[] tagId = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
             int tagNumber = ByteBuffer.wrap(tagId).getInt();
             Toast.makeText(getApplicationContext(), tagNumber + "", Toast.LENGTH_LONG).show();
