@@ -24,7 +24,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.whatstatus.R.layout.activity_main);
+    }
 
+    public String convertImageToSring(int imageId) {
+
+        Bitmap icon = BitmapFactory.decodeResource(this.getResources(), imageId);
+        return encodeToBase64(icon, Bitmap.CompressFormat.JPEG, 100);
+
+    }
+
+    public void loadList(){
         inHouse = (ListView) findViewById(R.id.inhouselist);
         outHouse = (ListView) findViewById(R.id.outhouselist);
         final ListItem item = new ListItem("דונלד טראמפ",
@@ -37,13 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
         inHouse.setAdapter(inHouseAdapter);
         outHouse.setAdapter(outHouseAdapter);
-    }
-
-    public String convertImageToSring(int imageId) {
-
-        Bitmap icon = BitmapFactory.decodeResource(this.getResources(), imageId);
-        return encodeToBase64(icon, Bitmap.CompressFormat.JPEG, 100);
-
     }
 
     public String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality)
