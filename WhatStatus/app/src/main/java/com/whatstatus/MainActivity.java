@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         ListAdapter inHouseAdapter = new ListAdapter(this,
                 new LinkedList<ListItem>(){{add(item);}});
         ListAdapter outHouseAdapter = new ListAdapter(this,
-                new LinkedList<ListItem>(){{add(item);}});
+                new LinkedList<ListItem>(){{add(item); add(item);}});
 
         inHouse.setAdapter(inHouseAdapter);
         outHouse.setAdapter(outHouseAdapter);
