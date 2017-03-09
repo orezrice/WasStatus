@@ -3,6 +3,7 @@
     package="com.whatstatus">
 
     <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
         android:name="android.hardware.nfc"
@@ -20,19 +21,21 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>
-            <meta-data android:name="android.nfc.action.TECH_DISCOVERED"
+
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
 
             <intent-filter>
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
+
                 <category android:name="android.nfc.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".NfcDisabledActivity"></activity>
+        <activity android:name=".NfcDisabledActivity" />
     </application>
 
 </manifest>

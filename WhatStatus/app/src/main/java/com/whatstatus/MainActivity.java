@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 import java.nio.ByteBuffer;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
     private NfcAdapter mNfcAdapter;
@@ -34,6 +35,17 @@ public class MainActivity extends AppCompatActivity {
             startActivity(NfcDisabledIntent);
         }
 
+        HttpRequest test = new HttpRequest("loginCommander", null, "http://socialchat.16mb.com/api.php");
+
+        String testStr = "";
+        try {
+            testStr = test.execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
         handleIntent(getIntent());
     }
 
@@ -43,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(com.whatstatus.R.menu.app_menu, menu);
         return true;
     }
-
 
     /**
      * define events for each menu click
@@ -91,8 +102,6 @@ public class MainActivity extends AppCompatActivity {
         mNfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
 
         Intent intent = getIntent();
-
-        handleIntent(intent);
     }
 
     @Override
