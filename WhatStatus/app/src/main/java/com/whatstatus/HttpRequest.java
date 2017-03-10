@@ -92,7 +92,7 @@ public class HttpRequest {
 
                 postData = postData.substring(0, postData.length() - 1);
 
-                writer.write(URLEncoder.encode(postData, "UTF-8"));
+                writer.write(postData);
 
                 writer.flush();
                 writer.close();
@@ -105,6 +105,8 @@ public class HttpRequest {
                     while ((line=br.readLine()) != null) {
                         response+=line;
                     }
+
+                    response = response.replaceAll("\\t+", "");
                 }
                 else {
                     response = "Error";
