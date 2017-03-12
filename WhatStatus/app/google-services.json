@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "32453122219",
+    "firebase_url": "https://social-chat-2f7ec.firebaseio.com",
+    "project_id": "social-chat-2f7ec",
+    "storage_bucket": "social-chat-2f7ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32453122219:android:03b71f0819da0c84",
+        "android_client_info": {
+          "package_name": "com.ofekot.socialchat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0SITIfblUSJsDrKSlCyT8XQ_-vPmSxIw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32453122219:android:7e9506aa682e00ff",
+        "android_client_info": {
+          "package_name": "com.whatstatus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0SITIfblUSJsDrKSlCyT8XQ_-vPmSxIw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

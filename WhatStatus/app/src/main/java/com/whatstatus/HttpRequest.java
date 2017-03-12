@@ -1,6 +1,7 @@
 package com.whatstatus;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,7 +14,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -21,11 +21,16 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Make an http request, T1: data to send, T2: data to recieve
  */
+
 public class HttpRequest {
     // Data Members
     private String m_reqUrl;
     private String m_reqAction;
     private HashMap<String, String> m_reqData;
+
+    public HttpRequest(String reqAction, HashMap<String, String> reqData) {
+        this(reqAction, reqData, "http://socialchat.16mb.com/api.php");
+    }
 
     public HttpRequest(String reqAction, HashMap<String, String> reqData, String reqUrl) {
         this.setAction(reqAction);
@@ -68,10 +73,19 @@ public class HttpRequest {
             URL url;
             String response = "";
             try {
-                url = new URL(getUrl());
+                StringBuffer strUrl = new StringBuffer(getUrl() + "?action=" + getAction() + "&");
+
+                if (getData() != null) {
+                    for (String key : getData().keySet()) {
+                        strUrl.append(key + "=" + getData().get(key) + "&");
+                    }
+                }
+
+                url = new URL(strUrl.substring(0, strUrl.length() - 1));
 
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(15000);
+
+                /*conn.setReadTimeout(15000);
                 conn.setConnectTimeout(15000);
                 conn.setRequestMethod("POST");
                 conn.setDoInput(true);
@@ -82,21 +96,21 @@ public class HttpRequest {
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(os, "UTF-8"));
 
-                String postData = "action=" + getAction() + "&";
+                StringBuffer postData = new StringBuffer("action=" + getAction() + "&");
 
                 if (getData() != null) {
                     for (String key : getData().keySet()) {
-                        postData.concat(key + "=" + getData().get(key) + "&");
+                        postData.append(key + "=" + getData().get(key) + "&");
                     }
                 }
 
-                postData = postData.substring(0, postData.length() - 1);
+                String strPostData = postData.substring(0, postData.length() - 1);
 
-                writer.write(postData);
+                writer.write(strPostData);
 
                 writer.flush();
                 writer.close();
-                os.close();
+                os.close();*/
                 int responseCode=conn.getResponseCode();
 
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
