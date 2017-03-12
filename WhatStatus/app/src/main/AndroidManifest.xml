@@ -38,12 +38,15 @@
 
         <activity android:name=".NfcDisabledActivity" />
 
+        <activity android:name=".AuthenticationActivity" />
+
         <service
             android:name=".FCM.DataManagementService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
         <service android:name=".FCM.TokenManagementService" android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>

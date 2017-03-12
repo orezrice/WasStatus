@@ -1,6 +1,7 @@
 package com.whatstatus;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.CountDownTimer;
@@ -20,7 +21,7 @@ import com.whatstatus.Models.Generals;
 
 import java.nio.ByteBuffer;
 
-public class authenticationActivity extends AppCompatActivity {
+public class AuthenticationActivity extends AppCompatActivity {
 
     ProgressBar progress;
 
@@ -38,6 +39,8 @@ public class authenticationActivity extends AppCompatActivity {
     String password;
 
     int requestCode;
+
+    private NfcAdapter mNfcAdapter;
 
 
     @Override
@@ -62,6 +65,8 @@ public class authenticationActivity extends AppCompatActivity {
         if(requestCode == -1) {
             startActivity(new Intent(this, MainActivity.class));
         }
+
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
     }
 
     @Override
@@ -144,5 +149,24 @@ public class authenticationActivity extends AppCompatActivity {
         setResult(Activity.RESULT_CANCELED,returnIntent);
         finish();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0,
+                new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+                0);
+        mNfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+    }
+
+    @Override
+    protected void onPause() {
+
+        mNfcAdapter.disableForegroundDispatch(this);
+
+        super.onPause();
     }
 }
