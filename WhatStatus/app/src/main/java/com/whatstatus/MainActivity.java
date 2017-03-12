@@ -1,21 +1,32 @@
 package com.whatstatus;
 
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.nfc.NfcAdapter;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.util.InputMismatchException;
 import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +50,15 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         }
+
+        ((FloatingActionButton)findViewById(R.id.fab)).setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                fabClick(view);
+                return true;
+            }
+        });
 
         if (!mNfcAdapter.isEnabled()) {
             Intent NfcDisabledIntent = new Intent(this, NfcDisabledActivity.class);
@@ -83,6 +103,53 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(com.whatstatus.R.menu.app_menu, menu);
         return true;
+    }
+
+    public void fabClick(View v) {
+
+        final EditText inputNumber = new EditText(MainActivity.this);
+        inputNumber.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        inputNumber.setLayoutParams(lp);
+
+        final AlertDialog alert = new AlertDialog.Builder(this)
+                .setTitle("הוסף לנוכחים")
+                .setMessage("הקלד מספר אישי של חייל נוכח")
+                .setView(inputNumber)
+                .setPositiveButton("אישור", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        try {
+                            int typedNumber =
+                                    Integer.parseInt(validateInput(inputNumber.getText().toString()));
+                            dialogInterface.dismiss();
+                            inputTyped(typedNumber);
+                        } catch (InputMismatchException e) {
+                            Toast.makeText(getApplicationContext(), "מספר החוגר לא תקין", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).create();
+
+        alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        alert.show();
+    }
+
+    public String validateInput(String baseInput) throws InputMismatchException {
+        final int DIGITS_IN_HOGER = 7;
+        try{
+            if(baseInput == null || baseInput.isEmpty() || baseInput.length() != DIGITS_IN_HOGER
+                    || baseInput.contains("-"))
+                throw new InputMismatchException();
+            return baseInput;
+        } catch (NumberFormatException e) {
+            throw new InputMismatchException();
+        }
+    }
+
+    public void inputTyped(int numberTyped) {
+        Toast.makeText(MainActivity.this,"מספר שהוקלד" + numberTyped, Toast.LENGTH_LONG).show();
     }
 
 
