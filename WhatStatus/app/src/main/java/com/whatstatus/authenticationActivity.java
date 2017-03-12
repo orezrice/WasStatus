@@ -79,7 +79,7 @@ public class authenticationActivity extends AppCompatActivity {
         byte[] tagId = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
         hogerNumber = ByteBuffer.wrap(tagId).getInt();
 
-
+        openLevel2();
     }
 
     public void openLevel2() {
@@ -136,5 +136,14 @@ public class authenticationActivity extends AppCompatActivity {
 
     public void clear() {
         Toast.makeText(this, "מאפס", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED,returnIntent);
+        finish();
+
     }
 }

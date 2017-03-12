@@ -222,7 +222,11 @@ public class MainActivity extends AppCompatActivity {
             case Generals.CLEAR_ACTION:
 
                 if(resultCode == Activity.RESULT_OK){
-                    Toast.makeText(this, "איפוס בוצע", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "לא יכולנו לאשר", Toast.LENGTH_SHORT).show();
+                }
+
+                if(resultCode == Activity.RESULT_CANCELED) {
+                    Toast.makeText(this, "לא יכולנו לאפס", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -230,7 +234,11 @@ public class MainActivity extends AppCompatActivity {
             case Generals.SEND_MESSAGE_ACTION:
 
                 if(resultCode == Activity.RESULT_OK){
-                    Toast.makeText(this, "איפוס בוצע", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "שלחנו את ההודעות", Toast.LENGTH_LONG).show();
+                }
+
+                if(resultCode == Activity.RESULT_CANCELED) {
+                    Toast.makeText(this, "לא יכולנו לשלוח", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
