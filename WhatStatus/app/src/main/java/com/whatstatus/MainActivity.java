@@ -1,5 +1,6 @@
 package com.whatstatus;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,6 +23,7 @@ import com.whatstatus.DAL.PeopleDAL;
 import com.whatstatus.DAL.StatusHelper;
 import com.whatstatus.FCM.DataManagementService;
 import com.whatstatus.FCM.TokenManagementService;
+import com.whatstatus.Models.Generals;
 import com.whatstatus.Models.People;
 
 import org.json.JSONArray;
@@ -108,6 +110,40 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch (requestCode){
+            case Generals.CLEAR_ACTION:
+
+                if(resultCode == Activity.RESULT_OK){
+                    Toast.makeText(this, "לא יכולנו לאשר", Toast.LENGTH_SHORT).show();
+                }
+
+                if(resultCode == Activity.RESULT_CANCELED) {
+                    Toast.makeText(this, "לא יכולנו לאפס", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+
+            case Generals.SEND_MESSAGE_ACTION:
+
+                if(resultCode == Activity.RESULT_OK){
+                    Toast.makeText(this, "שלחנו את ההודעות", Toast.LENGTH_LONG).show();
+                }
+
+                if(resultCode == Activity.RESULT_CANCELED) {
+                    Toast.makeText(this, "לא יכולנו לשלוח", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+
+
+    }
+
+
+
     @Override
     protected void onNewIntent(Intent intent) {
         handleIntent(intent);
