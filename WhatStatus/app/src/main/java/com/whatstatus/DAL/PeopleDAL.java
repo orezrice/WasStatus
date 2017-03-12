@@ -192,4 +192,21 @@ public class PeopleDAL {
         // Close the db connection
         db.close();
     }
+
+    public void deleteById(String cardId) {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // Define 'where' part of query.
+        String selection = "cardId = ?";
+
+        // Specify arguments in placeholder order.
+        String[] selectionArgs = { cardId };
+
+        // Issue SQL statement.
+        db.delete("t_people", selection, selectionArgs);
+
+        // Close the db connection
+        db.close();
+    }
 }
