@@ -6,7 +6,10 @@ import android.nfc.NfcAdapter;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.util.ThreadUtil;
+import android.text.Layout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -28,10 +31,15 @@ public class authenticationActivity extends AppCompatActivity {
     TextView txtLevel1;
     EditText iptLevel2;
 
+    View level2Layout;
+
     Button confirmButton;
 
     int hogerNumber;
     String password;
+
+    int requestCode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,14 @@ public class authenticationActivity extends AppCompatActivity {
         iptLevel2 = (EditText) findViewById(R.id.iptPass);
 
         confirmButton = (Button) findViewById(R.id.btnConfirm);
+
+        level2Layout = findViewById(R.id.layoutLevelTwo);
+
+        requestCode = getIntent().getIntExtra(Generals.REQUEST_TYPE, -1);
+
+        if(requestCode == -1) {
+            startActivity(new Intent(this, MainActivity.class));
+        }
     }
 
     @Override
@@ -63,6 +79,11 @@ public class authenticationActivity extends AppCompatActivity {
         byte[] tagId = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
         hogerNumber = ByteBuffer.wrap(tagId).getInt();
 
+
+    }
+
+    public void openLevel2() {
+        level2Layout.setVisibility(View.VISIBLE);
         progress.setProgress(1);
         confirmButton.setEnabled(true);
         txtLevel1.setText(hogerNumber + "");
@@ -74,6 +95,15 @@ public class authenticationActivity extends AppCompatActivity {
         password = iptLevel2.getText().toString();
         checkLevel2.setChecked(true);
         if(confirmed()) {
+
+            switch (requestCode) {
+                case Generals.CLEAR_ACTION:
+                    clear();
+                    break;
+                case Generals.SEND_MESSAGE_ACTION:
+                    sendMessage();
+                    break;
+            }
 
             new CountDownTimer(1000, 100) {
                 @Override
@@ -97,5 +127,14 @@ public class authenticationActivity extends AppCompatActivity {
 
     public boolean confirmed() {
         return Math.random() >= 0.5d;
+    }
+
+    public void sendMessage() {
+
+        Toast.makeText(this, "שולח הודעות", Toast.LENGTH_SHORT).show();
+    }
+
+    public void clear() {
+        Toast.makeText(this, "מאפס", Toast.LENGTH_SHORT).show();
     }
 }

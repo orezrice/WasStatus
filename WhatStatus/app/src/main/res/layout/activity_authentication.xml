@@ -8,8 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.whatstatus.authenticationActivity"
-    android:layoutDirection="rtl"
-    >
+    android:layoutDirection="rtl">
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,7 +44,8 @@
                         </TableRow>
                         <TableRow>
                             <CheckBox android:id="@+id/statusHogerNumber"
-                                android:checked="false" />
+                                android:checked="false"
+                                android:clickable="false"/>
                             <TextView
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                             android:text="מעבירים חוגר"/>
@@ -56,7 +56,10 @@
                     </TableLayout>
 
                 </TableRow>
-                <TableRow android:layout_weight="1" android:layout_width="match_parent">
+                <TableRow android:id="@+id/layoutLevelTwo"
+                    android:visibility="gone"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent">
                     <TableLayout android:layout_width="match_parent">
                         <TableRow>
                             <TextView
@@ -65,7 +68,8 @@
                         </TableRow>
                         <TableRow>
                             <CheckBox android:id="@+id/statusPass"
-                                android:checked="false" />
+                                android:checked="false"
+                                android:clickable="false"/>
                             <TextView
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 android:text="מקילידים סיסמא"/>
@@ -106,9 +110,5 @@
                 android:layout_marginRight="5dp" />
 
         </LinearLayout>
-
-
     </LinearLayout>
-
-
 </RelativeLayout>

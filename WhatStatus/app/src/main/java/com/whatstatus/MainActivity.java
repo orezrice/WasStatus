@@ -36,6 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
@@ -55,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(com.whatstatus.R.layout.activity_main);
 
-        startActivity(new Intent(this, authenticationActivity.class));
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
@@ -190,15 +190,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
+
             case com.whatstatus.R.id.refresh:
                 Toast.makeText(this,"Refreshing", Toast.LENGTH_LONG).show();
                 return true;
             case com.whatstatus.R.id.clear:
                 Intent i = new Intent(this, authenticationActivity.class);
+                i.putExtra(Generals.REQUEST_TYPE, Generals.CLEAR_ACTION);
                 startActivityForResult(i, Generals.CLEAR_ACTION);
                 return true;
             case com.whatstatus.R.id.message:
-                Toast.makeText(this,"sending message", Toast.LENGTH_LONG).show();
+                Intent it = new Intent(this, authenticationActivity.class);
+                it.putExtra(Generals.REQUEST_TYPE, Generals.SEND_MESSAGE_ACTION);
+                startActivityForResult(it, Generals.SEND_MESSAGE_ACTION);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -216,13 +220,24 @@ public class MainActivity extends AppCompatActivity {
 
         switch (requestCode){
             case Generals.CLEAR_ACTION:
+
                 if(resultCode == Activity.RESULT_OK){
-                    Toast.makeText(this, "מאושר!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "איפוס בוצע", Toast.LENGTH_LONG).show();
                 }
+
+                break;
+
+            case Generals.SEND_MESSAGE_ACTION:
+
+                if(resultCode == Activity.RESULT_OK){
+                    Toast.makeText(this, "איפוס בוצע", Toast.LENGTH_LONG).show();
+                }
+                break;
         }
 
 
     }
+
 
     private void handleIntent(Intent intent) {
         if(intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED) ||
@@ -266,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void inputTyped(int numberTyped) {
-        Toast.makeText(MainActivity.this,"מספר שהוקלד" + numberTyped, Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this,"מספר שהוקלד"  + numberTyped, Toast.LENGTH_LONG).show();
     }
 
 
