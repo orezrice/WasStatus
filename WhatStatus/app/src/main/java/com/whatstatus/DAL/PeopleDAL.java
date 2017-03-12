@@ -33,6 +33,49 @@ public class PeopleDAL {
         return m_instance;
     }
 
+    public People getById(String cardId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                "cardId",
+                "cardNumber",
+                "firstName",
+                "lastName",
+                "phoneNumber",
+                "photo",
+                "rank",
+                "isPresentAndSafe",
+                "isPresentGlobaly",
+        };
+
+        // Create a cursor to iterate over the results
+        Cursor cursor = db.query(
+                "t_people",              // The table to query
+                projection,              // The columns to return
+                "cardId = ?",            // The columns for the WHERE clause
+                new String[] { cardId }, // The values for the WHERE clause
+                null,                    // don't group the rows
+                null,                    // don't filter by row groups
+                null                     // The sort order
+        );
+
+        cursor.moveToNext();
+
+        return new People(
+                cursor.getString(0),
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getString(3),
+                cursor.getString(4),
+                cursor.getString(5),
+                cursor.getString(6),
+                cursor.getInt(7),
+                cursor.getInt(8)
+        );
+    }
+
     public ArrayList<People> getAll() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -121,6 +164,30 @@ public class PeopleDAL {
 
         // Issue SQL statement.
         db.delete("t_people", selection, selectionArgs);
+
+        // Close the db connection
+        db.close();
+    }
+
+    public void moveToPresent(String cardId) {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // Create ContentValues to add key "column"/value
+        ContentValues values = new ContentValues();
+        values.put("isPresentAndSafe", 1);
+
+        // Define 'where' part of query.
+        String selection = "cardId = ?";
+
+        // Specify arguments in placeholder order.
+        String[] selectionArgs = { cardId };
+
+        // Issue SQL statement.
+        db.update("t_people", //table
+                values, // column/value
+                selection, // selections
+                selectionArgs);
 
         // Close the db connection
         db.close();
