@@ -35,6 +35,7 @@
                 <category android:name="android.nfc.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity android:name=".NfcDisabledActivity" />
 
         <service
