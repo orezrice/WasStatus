@@ -6,7 +6,6 @@ import android.nfc.NfcAdapter;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.util.ThreadUtil;
 import android.text.Layout;
 import android.view.View;
 import android.view.ViewGroup;
