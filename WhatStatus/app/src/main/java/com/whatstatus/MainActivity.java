@@ -159,8 +159,12 @@ public class MainActivity extends AppCompatActivity {
             switch (requestCode){
                 case Generals.CLEAR_ACTION:
                     PeopleDAL.getInstance(this).deleteAll();
-                    new HttpRequest("resetPresentsList", null).execute();
-                    Utils.initializePeopleData();
+                    new HttpRequest("resetPresentsList", null).execute(new HttpRequest.TaskListener() {
+                        @Override
+                        public void onFinished(String result) {
+                            Utils.initializePeopleData();
+                        }
+                    });
 
                     Toast.makeText(this, "הנתונים התאפסו!", Toast.LENGTH_SHORT).show();
 

@@ -27,7 +27,44 @@ public class Utils {
     public static ListAdapter outHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<ListItem>());
 
     public static void initializePeopleData() {
-        new initializeAsync().execute();
+        new HttpRequest("getAbsenceList",
+                null).execute(new HttpRequest.TaskListener() {
+            @Override
+            public void onFinished(String result) {
+                PeopleDAL pDal = PeopleDAL.getInstance(MainActivity.getInstance().getApplicationContext());
+
+                JSONArray peopleArr = null;
+                try {
+                    peopleArr = new JSONArray(result);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                // Remove all the absent people from the local db
+                pDal.deleteAbsence();
+
+                // Add all the people to the local database
+                for (int pIndex = 0; peopleArr != null && pIndex < peopleArr.length(); pIndex++) {
+                    try {
+                        pDal.addPeople(new People(
+                                peopleArr.getJSONObject(pIndex).getString("cardId"),
+                                peopleArr.getJSONObject(pIndex).getString("cardNumber"),
+                                peopleArr.getJSONObject(pIndex).getString("firstName"),
+                                peopleArr.getJSONObject(pIndex).getString("lastName"),
+                                peopleArr.getJSONObject(pIndex).getString("phoneNumber"),
+                                peopleArr.getJSONObject(pIndex).getString("photo"),
+                                peopleArr.getJSONObject(pIndex).getString("rank"),
+                                peopleArr.getJSONObject(pIndex).getInt("isPresentAndSafe"),
+                                peopleArr.getJSONObject(pIndex).getInt("isPresentGlobaly")
+                        ));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                Utils.loadList();
+            }
+        });
     }
 
     public static String convertImageToSring(int imageId) {

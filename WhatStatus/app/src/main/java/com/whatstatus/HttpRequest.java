@@ -3,6 +3,7 @@ package com.whatstatus;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.BufferedReader;
@@ -74,7 +75,25 @@ public class HttpRequest {
         return new HttpRequestTask().execute();
     }
 
+    public AsyncTask<Void, Void, String> execute(TaskListener listener) {
+        return new HttpRequestTask(listener).execute();
+    }
+
+    public interface TaskListener {
+        public void onFinished(String result);
+    }
+
     public class HttpRequestTask extends AsyncTask<Void, Void, String> {
+        // This is the reference to the associated listener
+        private TaskListener taskListener = null;
+
+        public HttpRequestTask() {
+            this.taskListener = null;
+        }
+
+        public HttpRequestTask(TaskListener listener) {
+            this.taskListener = listener;
+        }
 
         @Override
         protected String doInBackground(Void ...Params) {
@@ -142,6 +161,18 @@ public class HttpRequest {
             }
 
             return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            // In onPostExecute we check if the listener is valid
+            if(this.taskListener != null) {
+
+                // And if it is we call the callback function on it.
+                this.taskListener.onFinished(result);
+            }
         }
     }
 }
