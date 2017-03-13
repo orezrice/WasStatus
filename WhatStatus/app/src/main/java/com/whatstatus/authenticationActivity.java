@@ -96,6 +96,7 @@ public class AuthenticationActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                confirmButton.setText("מתחבר...");
                 confirmClick();
             }
         });
