@@ -7,7 +7,9 @@ import android.nfc.NfcAdapter;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Layout;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +28,6 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 public class AuthenticationActivity extends AppCompatActivity {
-
-    ProgressBar progress;
 
     CheckBox checkLevel1;
     CheckBox checkLevel2;
@@ -51,12 +51,26 @@ public class AuthenticationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
 
-        progress = (ProgressBar) findViewById(R.id.progress);
-
         checkLevel1 = (CheckBox) findViewById(R.id.statusHogerNumber);
         checkLevel2 = (CheckBox) findViewById(R.id.statusPass);
 
         iptLevel2 = (EditText) findViewById(R.id.iptPass);
+        iptLevel2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                checkLevel2.setChecked(false);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                checkLevel2.setChecked(true);
+            }
+        });
 
         confirmButton = (Button) findViewById(R.id.btnConfirm);
 
@@ -90,7 +104,6 @@ public class AuthenticationActivity extends AppCompatActivity {
 
     public void openLevel2() {
         level2Layout.setVisibility(View.VISIBLE);
-        progress.setProgress(1);
 
         confirmButton.setEnabled(true);
         confirmButton.setOnClickListener(new View.OnClickListener() {
