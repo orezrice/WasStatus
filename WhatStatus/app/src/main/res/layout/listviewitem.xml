@@ -24,6 +24,7 @@
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:text="אנונימי"
+        android:textColor="@android:color/black"
         android:layout_weight="0.3"/>
 
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.wifi.WifiConfiguration;
+import android.util.Log;
 
 import com.whatstatus.Models.People;
 
@@ -205,6 +206,19 @@ public class PeopleDAL {
 
         // Issue SQL statement.
         db.delete("t_people", selection, selectionArgs);
+
+        // Close the db connection
+        db.close();
+
+        Log.d("DBTest", "Deleted");
+    }
+
+    public void deleteAll() {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // Issue SQL statement.
+        db.delete("t_people", null, null);
 
         // Close the db connection
         db.close();

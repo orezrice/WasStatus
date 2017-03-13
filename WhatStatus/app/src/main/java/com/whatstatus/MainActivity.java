@@ -1,20 +1,27 @@
 package com.whatstatus;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.OnNmeaMessageListener;
 import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -73,7 +80,36 @@ public class MainActivity extends AppCompatActivity {
         outHouse = (ListView) findViewById(R.id.outhouselist);
 
         Utils.initializePeopleData();
+        ((FloatingActionButton)findViewById(R.id.fab)).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.add_by_id_dialog,null);
+                final EditText edit = (EditText)dialogView.findViewById(R.id.input);
 
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("מספר אישי:")
+                        .setView(dialogView)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                HashMap<String, String> data = new HashMap<String, String>();
+                                data.put("cardNumber", "9876543");
+                                data.put("token", FirebaseInstanceId.getInstance().getToken());
+
+                                new HttpRequest("updateListByNumber", data);
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+                return true;
+            }
+        });
         handleIntent(getIntent());
     }
 
@@ -99,6 +135,10 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case com.whatstatus.R.id.refresh:
                 Toast.makeText(this,"Refreshing", Toast.LENGTH_LONG).show();
+                PeopleDAL.getInstance(this).deleteAll();
+                new HttpRequest("resetPresentsList", null).execute();
+                Utils.initializePeopleData();
+                Log.d("DBTest", "test");
                 return true;
             case com.whatstatus.R.id.clear:
                 Toast.makeText(this,"clearing", Toast.LENGTH_LONG).show();
@@ -138,11 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
         }
-
-
     }
-
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -156,14 +192,13 @@ public class MainActivity extends AppCompatActivity {
                 intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED)){
             byte[] tagId = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
             int tagNumber = ByteBuffer.wrap(tagId).getInt();
-            Toast.makeText(getApplicationContext(), tagNumber + "", Toast.LENGTH_LONG).show();
 
             HashMap<String, String> reqData = new HashMap<String, String>();
 
             reqData.put("cardId", tagNumber + "");
             reqData.put("token", FirebaseInstanceId.getInstance().getToken());
 
-            HttpRequest updateRequest = new HttpRequest("updateListById", reqData, "http://socialchat.16mb.com/api.php");
+            new HttpRequest("updateListById", reqData, "http://socialchat.16mb.com/api.php").execute();
 
             PeopleDAL.getInstance(getApplicationContext()).moveToPresent(tagNumber + "");
 

@@ -49,10 +49,10 @@ public class Utils {
                 pDal.addPeople(new People(
                         peopleArr.getJSONObject(pIndex).getString("cardId"),
                         peopleArr.getJSONObject(pIndex).getString("cardNumber"),
-                        peopleArr.getJSONObject(pIndex).getString("cardNumber"),
                         peopleArr.getJSONObject(pIndex).getString("firstName"),
                         peopleArr.getJSONObject(pIndex).getString("lastName"),
                         peopleArr.getJSONObject(pIndex).getString("phoneNumber"),
+                        peopleArr.getJSONObject(pIndex).getString("photo"),
                         peopleArr.getJSONObject(pIndex).getString("rank"),
                         peopleArr.getJSONObject(pIndex).getInt("isPresentAndSafe"),
                         peopleArr.getJSONObject(pIndex).getInt("isPresentGlobaly")
@@ -62,12 +62,7 @@ public class Utils {
             e.printStackTrace();
         }
 
-        MainActivity.getInstance().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Utils.loadList();
-            }
-        });
+        loadList();
     }
 
     public static String convertImageToSring(int imageId) {
@@ -86,12 +81,12 @@ public class Utils {
             if (people.getIsPresentAndSafe() == 0) {
                 outHouseList.add(new ListItem(
                         people.getFirstName() + " " + people.getLastName(),
-                        convertImageToSring(R.drawable.exampleperson)
+                        convertImageToSring(R.drawable.noimage)
                 ));
             } else {
                 inHouseList.add(new ListItem(
                         people.getFirstName() + " " + people.getLastName(),
-                        convertImageToSring(R.drawable.exampleperson)
+                        convertImageToSring(R.drawable.noimage)
                 ));
             }
         }
