@@ -7,6 +7,7 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.whatstatus.HttpRequest;
+import com.whatstatus.Utils;
 
 import java.util.HashMap;
 
@@ -42,5 +43,7 @@ public class TokenManagementService extends FirebaseInstanceIdService {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("FCMToken", FirebaseInstanceId.getInstance().getToken());
         editor.commit();
+
+        Utils.initializePeopleData();
     }
 }

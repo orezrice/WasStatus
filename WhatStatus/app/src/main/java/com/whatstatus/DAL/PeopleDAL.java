@@ -170,19 +170,25 @@ public class PeopleDAL {
         db.close();
     }
 
-    public void moveToPresent(String cardId) {
+    public void moveToPresent(String cardId, boolean selectionType) {
         // Gets the data repository in write mode
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String selection = "";
 
         // Create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
         values.put("isPresentAndSafe", 1);
 
-        // Define 'where' part of query.
-        String selection = "cardId = ?";
+        if (selectionType) {
+            // Define 'where' part of query.
+            selection = "cardId = ?";
+        } else {
+            // Define 'where' part of query.
+            selection = "cardNumber = ?";
+        }
 
         // Specify arguments in placeholder order.
-        String[] selectionArgs = { cardId };
+        String[] selectionArgs = {cardId};
 
         // Issue SQL statement.
         db.update("t_people", //table

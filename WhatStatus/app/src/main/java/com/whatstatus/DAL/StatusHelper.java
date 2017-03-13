@@ -12,7 +12,7 @@ public class StatusHelper  extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE t_people " +
                     "(cardId TEXT PRIMARY KEY," +
-                    "cardNumber TEXT, " +
+                    "cardNumber TEXT UNIQUE NOT NULL, " +
                     "firstName TEXT, " +
                     "lastName TEXT, " +
                     "phoneNumber TEXT, " +

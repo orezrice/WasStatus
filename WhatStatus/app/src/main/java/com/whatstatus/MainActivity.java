@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(com.whatstatus.R.layout.activity_main);
 
+        startActivity(new Intent(this, ExpandbleListViewExample.class));
+
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
 
@@ -67,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
         inHouse = (ListView) findViewById(R.id.inhouselist);
         outHouse = (ListView) findViewById(R.id.outhouselist);
 
-        Utils.initializePeopleData();
-
         ((FloatingActionButton)findViewById(R.id.fab)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,12 +86,12 @@ public class MainActivity extends AppCompatActivity {
 
                                 HashMap<String, String> reqData = new HashMap<String, String>();
 
-                                reqData.put("cardId", cardNumber);
+                                reqData.put("cardNumber", cardNumber);
                                 reqData.put("token", FirebaseInstanceId.getInstance().getToken());
 
-                                new HttpRequest("updateListById", reqData, "http://socialchat.16mb.com/api.php").execute();
+                                new HttpRequest("updateListByNumber", reqData, "http://socialchat.16mb.com/api.php").execute();
 
-                                PeopleDAL.getInstance(getApplicationContext()).moveToPresent(cardNumber);
+                                PeopleDAL.getInstance(getApplicationContext()).moveToPresent(cardNumber, false);
 
                                 Utils.loadList();
 
@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 //return false;
             }
         });
+
         handleIntent(getIntent());
     }
 
@@ -209,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
             new HttpRequest("updateListById", reqData, "http://socialchat.16mb.com/api.php").execute();
 
-            PeopleDAL.getInstance(getApplicationContext()).moveToPresent(tagNumber + "");
+            PeopleDAL.getInstance(getApplicationContext()).moveToPresent(tagNumber + "", true);
 
             Utils.loadList();
         }
@@ -228,6 +229,13 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         handleIntent(intent);
+    }
+
+    @Override
+    protected void onStart() {
+        Utils.initializePeopleData();
+
+        super.onStart();
     }
 
     @Override
