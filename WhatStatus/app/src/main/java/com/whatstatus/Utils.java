@@ -20,6 +20,9 @@ import java.util.concurrent.ExecutionException;
  * Created by User on 12/03/2017.
  */
 public class Utils {
+    public static ListAdapter inHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<ListItem>());
+    public static ListAdapter outHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<ListItem>());
+
     public static void initializePeopleData() {
         PeopleDAL pDal = PeopleDAL.getInstance(MainActivity.getInstance().getApplicationContext());
         String peopleJSON = "";
@@ -59,7 +62,12 @@ public class Utils {
             e.printStackTrace();
         }
 
-        loadList();
+        MainActivity.getInstance().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Utils.loadList();
+            }
+        });
     }
 
     public static String convertImageToSring(int imageId) {
@@ -88,11 +96,17 @@ public class Utils {
             }
         }
 
-        ListAdapter inHouseAdapter = new ListAdapter(MainActivity.getInstance(), inHouseList);
-        ListAdapter outHouseAdapter = new ListAdapter(MainActivity.getInstance(), outHouseList);
+        inHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<ListItem>());
+        outHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<ListItem>());
+
+        inHouseAdapter.addAll(inHouseList);
+        outHouseAdapter.addAll(outHouseList);
 
         MainActivity.getInstance().inHouse.setAdapter(inHouseAdapter);
         MainActivity.getInstance().outHouse.setAdapter(outHouseAdapter);
+
+        inHouseAdapter.notifyDataSetChanged();
+        outHouseAdapter.notifyDataSetChanged();
     }
 
     public static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality)
