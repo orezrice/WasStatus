@@ -107,7 +107,10 @@
                 android:layout_height="match_parent"
                 android:id="@+id/progress"
                 style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_marginRight="5dp" />
+                android:layout_marginRight="5dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:progress="1"/>
 
         </LinearLayout>
     </LinearLayout>

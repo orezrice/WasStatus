@@ -17,9 +17,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.whatstatus.DAL.PeopleDAL;
 import com.whatstatus.Models.Generals;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 
 public class AuthenticationActivity extends AppCompatActivity {
 
@@ -71,25 +74,28 @@ public class AuthenticationActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        if(intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED) ||
-                intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED)) {
-            handleNFCRead(intent);
-        }
+        handleNFCRead(intent);
 
         super.onNewIntent(intent);
     }
 
     private void handleNFCRead(Intent intent) {
-        byte[] tagId = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
-        hogerNumber = ByteBuffer.wrap(tagId).getInt();
+        if(intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED) ||
+                intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED)){
+            byte[] tagId = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
+            hogerNumber = ByteBuffer.wrap(tagId).getInt();
 
-        openLevel2();
+            Toast.makeText(getApplicationContext(), hogerNumber + "", Toast.LENGTH_LONG).show();
+
+            openLevel2();
+        }
     }
 
     public void openLevel2() {
         level2Layout.setVisibility(View.VISIBLE);
         progress.setProgress(1);
         confirmButton.setEnabled(true);
+        checkLevel1.setChecked(true);
         txtLevel1.setText(hogerNumber + "");
         txtLevel1.setVisibility(View.VISIBLE);
         iptLevel2.setEnabled(true);
@@ -146,7 +152,7 @@ public class AuthenticationActivity extends AppCompatActivity {
     public void onBackPressed() {
 
         Intent returnIntent = new Intent();
-        setResult(Activity.RESULT_CANCELED,returnIntent);
+        setResult(Activity.RESULT_CANCELED, returnIntent);
         finish();
 
     }

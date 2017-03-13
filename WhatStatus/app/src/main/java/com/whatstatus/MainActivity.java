@@ -94,14 +94,16 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                String cardNumber = edit.getText().toString();
+
                                 HashMap<String, String> reqData = new HashMap<String, String>();
 
-                                reqData.put("cardId", "3456758");
+                                reqData.put("cardId", cardNumber);
                                 reqData.put("token", FirebaseInstanceId.getInstance().getToken());
 
                                 new HttpRequest("updateListById", reqData, "http://socialchat.16mb.com/api.php").execute();
 
-                                PeopleDAL.getInstance(getApplicationContext()).moveToPresent("3456758");
+                                PeopleDAL.getInstance(getApplicationContext()).moveToPresent(cardNumber);
 
                                 Utils.loadList();
 
@@ -138,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent authenticationIntent = new Intent(this, AuthenticationActivity.class);
+
         // Handle item selection
         switch (item.getItemId()) {
             case com.whatstatus.R.id.refresh:
@@ -146,12 +150,21 @@ public class MainActivity extends AppCompatActivity {
                 new HttpRequest("resetPresentsList", null).execute();
                 Utils.initializePeopleData();
                 Log.d("DBTest", "test");
+
                 return true;
             case com.whatstatus.R.id.clear:
                 Toast.makeText(this,"clearing", Toast.LENGTH_LONG).show();
+                authenticationIntent.putExtra(Generals.REQUEST_TYPE, Generals.CLEAR_ACTION);
+                startActivityForResult(authenticationIntent, Generals.CLEAR_ACTION);
+                finish();
+
                 return true;
             case com.whatstatus.R.id.message:
-                Toast.makeText(this,"sending message", Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"clearing", Toast.LENGTH_LONG).show();
+                authenticationIntent.putExtra(Generals.REQUEST_TYPE, Generals.SEND_MESSAGE_ACTION);
+                startActivityForResult(authenticationIntent, Generals.SEND_MESSAGE_ACTION);
+                finish();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -163,26 +176,25 @@ public class MainActivity extends AppCompatActivity {
 
         switch (requestCode){
             case Generals.CLEAR_ACTION:
-
                 if(resultCode == Activity.RESULT_OK){
-                    Toast.makeText(this, "לא יכולנו לאשר", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Logged in!", Toast.LENGTH_SHORT).show();
                 }
 
                 if(resultCode == Activity.RESULT_CANCELED) {
-                    Toast.makeText(this, "לא יכולנו לאפס", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
 
             case Generals.SEND_MESSAGE_ACTION:
-
                 if(resultCode == Activity.RESULT_OK){
-                    Toast.makeText(this, "שלחנו את ההודעות", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Logged in!", Toast.LENGTH_SHORT).show();
                 }
 
                 if(resultCode == Activity.RESULT_CANCELED) {
-                    Toast.makeText(this, "לא יכולנו לשלוח", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
                 }
+
                 break;
         }
     }

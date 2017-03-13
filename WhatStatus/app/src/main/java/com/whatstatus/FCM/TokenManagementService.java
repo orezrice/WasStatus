@@ -2,6 +2,7 @@ package com.whatstatus.FCM;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
@@ -26,6 +27,8 @@ public class TokenManagementService extends FirebaseInstanceIdService {
         // If the application doesn't have token yet
         if (currToken.equals("none")) {
             tokenData.put("token", FirebaseInstanceId.getInstance().getToken());
+            tokenData.put("password", "165145");
+            Log.d("password", tokenData.get("password"));
             HttpRequest addReq = new HttpRequest("addToken", tokenData, "http://socialchat.16mb.com/api.php");
             addReq.execute();
         } else { // Token updated
