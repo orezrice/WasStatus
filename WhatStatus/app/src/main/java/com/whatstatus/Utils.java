@@ -2,6 +2,7 @@ package com.whatstatus;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Base64;
 import android.widget.ListView;
 
@@ -10,9 +11,11 @@ import com.whatstatus.Models.People;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
 
@@ -24,45 +27,7 @@ public class Utils {
     public static ListAdapter outHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<ListItem>());
 
     public static void initializePeopleData() {
-        PeopleDAL pDal = PeopleDAL.getInstance(MainActivity.getInstance().getApplicationContext());
-        String peopleJSON = "";
-
-        // Try to get people list from the server api
-        try {
-            peopleJSON = new HttpRequest("getAbsenceList",
-                    null, "http://socialchat.16mb.com/api.php").execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        // Parse the string to json objects
-        try {
-            JSONArray peopleArr = new JSONArray(peopleJSON);
-
-            // Remove all the absent people from the local db
-            pDal.deleteAbsence();
-
-            // Add all the people to the local database
-            for (int pIndex = 0; pIndex < peopleArr.length(); pIndex++) {
-                pDal.addPeople(new People(
-                        peopleArr.getJSONObject(pIndex).getString("cardId"),
-                        peopleArr.getJSONObject(pIndex).getString("cardNumber"),
-                        peopleArr.getJSONObject(pIndex).getString("firstName"),
-                        peopleArr.getJSONObject(pIndex).getString("lastName"),
-                        peopleArr.getJSONObject(pIndex).getString("phoneNumber"),
-                        peopleArr.getJSONObject(pIndex).getString("photo"),
-                        peopleArr.getJSONObject(pIndex).getString("rank"),
-                        peopleArr.getJSONObject(pIndex).getInt("isPresentAndSafe"),
-                        peopleArr.getJSONObject(pIndex).getInt("isPresentGlobaly")
-                ));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        loadList();
+        new initializeAsync().execute();
     }
 
     public static String convertImageToSring(int imageId) {
@@ -110,4 +75,31 @@ public class Utils {
         image.compress(compressFormat, quality, byteArrayOS);
         return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
     }
+
+    public static boolean loginCommander(String cardId, String password) {
+        HashMap<String, String> data = new HashMap<String, String>();
+
+        data.put("cardId", cardId);
+        data.put("password", password);
+
+        try {
+            String responseCode = new HttpRequest("loginCommander", data).execute().get();
+
+            JSONObject responseObject = new JSONObject(responseCode);
+
+            if (responseObject.getInt("loginCommander") == 200) {
+                return (true);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return (false);
+    }
 }
+
+

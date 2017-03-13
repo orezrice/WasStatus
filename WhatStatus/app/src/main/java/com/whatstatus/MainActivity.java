@@ -5,21 +5,20 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.location.OnNmeaMessageListener;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
-import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -27,23 +26,12 @@ import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.whatstatus.DAL.PeopleDAL;
-import com.whatstatus.DAL.StatusHelper;
-import com.whatstatus.FCM.DataManagementService;
-import com.whatstatus.FCM.TokenManagementService;
 import com.whatstatus.Models.Generals;
 import com.whatstatus.Models.People;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.concurrent.ExecutionException;
+import android.Manifest;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -145,25 +133,17 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case com.whatstatus.R.id.refresh:
-                Toast.makeText(this,"Refreshing", Toast.LENGTH_LONG).show();
-                PeopleDAL.getInstance(this).deleteAll();
-                new HttpRequest("resetPresentsList", null).execute();
                 Utils.initializePeopleData();
-                Log.d("DBTest", "test");
 
                 return true;
             case com.whatstatus.R.id.clear:
-                Toast.makeText(this,"clearing", Toast.LENGTH_LONG).show();
                 authenticationIntent.putExtra(Generals.REQUEST_TYPE, Generals.CLEAR_ACTION);
                 startActivityForResult(authenticationIntent, Generals.CLEAR_ACTION);
-                finish();
 
                 return true;
             case com.whatstatus.R.id.message:
-                Toast.makeText(this,"clearing", Toast.LENGTH_LONG).show();
                 authenticationIntent.putExtra(Generals.REQUEST_TYPE, Generals.SEND_MESSAGE_ACTION);
                 startActivityForResult(authenticationIntent, Generals.SEND_MESSAGE_ACTION);
-                finish();
 
                 return true;
             default:
@@ -173,29 +153,35 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode){
-            case Generals.CLEAR_ACTION:
-                if(resultCode == Activity.RESULT_OK){
-                    Toast.makeText(this, "Logged in!", Toast.LENGTH_SHORT).show();
-                }
+        if(resultCode == Activity.RESULT_OK){
+            switch (requestCode){
+                case Generals.CLEAR_ACTION:
+                    PeopleDAL.getInstance(this).deleteAll();
+                    new HttpRequest("resetPresentsList", null).execute();
+                    Utils.initializePeopleData();
 
-                if(resultCode == Activity.RESULT_CANCELED) {
-                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-                }
+                    Toast.makeText(this, "הנתונים התאפסו!", Toast.LENGTH_SHORT).show();
 
-                break;
+                    break;
 
-            case Generals.SEND_MESSAGE_ACTION:
-                if(resultCode == Activity.RESULT_OK){
-                    Toast.makeText(this, "Logged in!", Toast.LENGTH_SHORT).show();
-                }
-
-                if(resultCode == Activity.RESULT_CANCELED) {
-                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-                }
-
-                break;
+                case Generals.SEND_MESSAGE_ACTION:
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.SEND_SMS)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                                Manifest.permission.SEND_SMS)) {
+                        } else {
+                            ActivityCompat.requestPermissions(this,
+                                    new String[]{Manifest.permission.SEND_SMS},
+                                    0);
+                        }
+                    }
+                    break;
+            }
+        } else {
+            Toast.makeText(this, "בעיה בהתחברות!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -246,5 +232,27 @@ public class MainActivity extends AppCompatActivity {
         mNfcAdapter.disableForegroundDispatch(this);
 
         super.onPause();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 0: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    SmsManager sms = SmsManager.getDefault();
+
+                    for (People people : PeopleDAL.getInstance(getApplicationContext()).getAll()) {
+                        sms.sendTextMessage(people.getPhoneNumber(),
+                                null,
+                                "הכל בסדר? אתה נמצא במחרב מוגן?", null, null);
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "SMS faild, please try again.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+        }
     }
 }

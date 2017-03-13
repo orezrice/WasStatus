@@ -8,6 +8,7 @@ import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -31,7 +32,6 @@ public class AuthenticationActivity extends AppCompatActivity {
     CheckBox checkLevel1;
     CheckBox checkLevel2;
 
-    TextView txtLevel1;
     EditText iptLevel2;
 
     View level2Layout;
@@ -56,7 +56,6 @@ public class AuthenticationActivity extends AppCompatActivity {
         checkLevel1 = (CheckBox) findViewById(R.id.statusHogerNumber);
         checkLevel2 = (CheckBox) findViewById(R.id.statusPass);
 
-        txtLevel1 = (TextView) findViewById(R.id.txtHogerNumber);
         iptLevel2 = (EditText) findViewById(R.id.iptPass);
 
         confirmButton = (Button) findViewById(R.id.btnConfirm);
@@ -85,8 +84,6 @@ public class AuthenticationActivity extends AppCompatActivity {
             byte[] tagId = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
             hogerNumber = ByteBuffer.wrap(tagId).getInt();
 
-            Toast.makeText(getApplicationContext(), hogerNumber + "", Toast.LENGTH_LONG).show();
-
             openLevel2();
         }
     }
@@ -94,67 +91,39 @@ public class AuthenticationActivity extends AppCompatActivity {
     public void openLevel2() {
         level2Layout.setVisibility(View.VISIBLE);
         progress.setProgress(1);
+
         confirmButton.setEnabled(true);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmClick();
+            }
+        });
+
         checkLevel1.setChecked(true);
-        txtLevel1.setText(hogerNumber + "");
-        txtLevel1.setVisibility(View.VISIBLE);
         iptLevel2.setEnabled(true);
     }
 
-    public void confirmClick(View v) {
+    public void confirmClick() {
         password = iptLevel2.getText().toString();
         checkLevel2.setChecked(true);
-        if(confirmed()) {
+        Intent returnIntent = new Intent();
 
-            switch (requestCode) {
-                case Generals.CLEAR_ACTION:
-                    clear();
-                    break;
-                case Generals.SEND_MESSAGE_ACTION:
-                    sendMessage();
-                    break;
-            }
-
-            new CountDownTimer(1000, 100) {
-                @Override
-                public void onTick(long l) {
-
-                }
-
-                @Override
-                public void onFinish() {
-                    Intent returnIntent = new Intent();
-                    setResult(Activity.RESULT_OK,returnIntent);
-                    finish();
-                }
-            }.start();
+        if(Utils.loginCommander(hogerNumber + "", password)) {
+            setResult(Activity.RESULT_OK, returnIntent);
         } else {
-            Toast.makeText(this,
-                    "אנחנו כמעט שם!\nרק צריך לוודא שם משתמש וסיסמא",
-                    Toast.LENGTH_SHORT).show();
+            setResult(Activity.RESULT_CANCELED, returnIntent);
         }
-    }
 
-    public boolean confirmed() {
-        return Math.random() >= 0.5d;
-    }
-
-    public void sendMessage() {
-
-        Toast.makeText(this, "שולח הודעות", Toast.LENGTH_SHORT).show();
-    }
-
-    public void clear() {
-        Toast.makeText(this, "מאפס", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override
     public void onBackPressed() {
-
         Intent returnIntent = new Intent();
         setResult(Activity.RESULT_CANCELED, returnIntent);
-        finish();
 
+        super.onBackPressed();
     }
 
     @Override

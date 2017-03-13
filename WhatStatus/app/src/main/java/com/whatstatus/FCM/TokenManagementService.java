@@ -26,14 +26,13 @@ public class TokenManagementService extends FirebaseInstanceIdService {
 
         // If the application doesn't have token yet
         if (currToken.equals("none")) {
-            tokenData.put("token", FirebaseInstanceId.getInstance().getToken());
             tokenData.put("password", "165145");
-            Log.d("password", tokenData.get("password"));
             HttpRequest addReq = new HttpRequest("addToken", tokenData, "http://socialchat.16mb.com/api.php");
             addReq.execute();
         } else { // Token updated
             tokenData.put("oldToken", currToken);
             tokenData.put("newToken", FirebaseInstanceId.getInstance().getToken());
+            tokenData.put("password", "165145");
             HttpRequest refreshReq = new HttpRequest("refreshToken", tokenData, "http://socialchat.16mb.com/api.php");
             refreshReq.execute();
 

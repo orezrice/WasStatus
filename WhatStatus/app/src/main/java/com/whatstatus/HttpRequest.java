@@ -3,6 +3,8 @@ package com.whatstatus;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -33,6 +35,12 @@ public class HttpRequest {
     }
 
     public HttpRequest(String reqAction, HashMap<String, String> reqData, String reqUrl) {
+        if (reqData == null) {
+            reqData = new HashMap<String, String>();
+        }
+
+        reqData.put("token", FirebaseInstanceId.getInstance().getToken());
+
         this.setAction(reqAction);
         this.setData(reqData);
         this.setUrl(reqUrl);
@@ -75,10 +83,8 @@ public class HttpRequest {
             try {
                 StringBuffer strUrl = new StringBuffer(getUrl() + "?action=" + getAction() + "&");
 
-                if (getData() != null) {
-                    for (String key : getData().keySet()) {
-                        strUrl.append(key + "=" + getData().get(key) + "&");
-                    }
+                for (String key : getData().keySet()) {
+                    strUrl.append(key + "=" + getData().get(key) + "&");
                 }
 
                 url = new URL(strUrl.substring(0, strUrl.length() - 1));
