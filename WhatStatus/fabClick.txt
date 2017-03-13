@@ -1,0 +1,32 @@
+        ((FloatingActionButton)findViewById(R.id.fab)).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.add_by_id_dialog, null);
+
+                final EditText edit = (EditText)dialogView.findViewById(R.id.input);
+
+
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("מספר אישי")
+                        .setView(MainActivity.this.getLayoutInflater().inflate(R.layout.add_by_id_dialog, null))
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                int typedNumber = Integer.parseInt( edit.getText().toString());
+
+
+                                dialogInterface.dismiss();
+                            }
+
+                        })
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        }).show();
+                return true;
+            }
+        });
