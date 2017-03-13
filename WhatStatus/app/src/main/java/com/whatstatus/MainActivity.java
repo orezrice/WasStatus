@@ -80,9 +80,10 @@ public class MainActivity extends AppCompatActivity {
         outHouse = (ListView) findViewById(R.id.outhouselist);
 
         Utils.initializePeopleData();
-        ((FloatingActionButton)findViewById(R.id.fab)).setOnTouchListener(new View.OnTouchListener() {
+
+        ((FloatingActionButton)findViewById(R.id.fab)).setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 LayoutInflater inflater = MainActivity.this.getLayoutInflater();
                 View dialogView = inflater.inflate(R.layout.add_by_id_dialog,null);
                 final EditText edit = (EditText)dialogView.findViewById(R.id.input);
@@ -93,11 +94,17 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                HashMap<String, String> data = new HashMap<String, String>();
-                                data.put("cardNumber", "9876543");
-                                data.put("token", FirebaseInstanceId.getInstance().getToken());
+                                HashMap<String, String> reqData = new HashMap<String, String>();
 
-                                new HttpRequest("updateListByNumber", data);
+                                reqData.put("cardId", "3456758");
+                                reqData.put("token", FirebaseInstanceId.getInstance().getToken());
+
+                                new HttpRequest("updateListById", reqData, "http://socialchat.16mb.com/api.php").execute();
+
+                                PeopleDAL.getInstance(getApplicationContext()).moveToPresent("3456758");
+
+                                Utils.loadList();
+
                                 dialog.dismiss();
                             }
                         })
@@ -107,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                                 dialog.dismiss();
                             }
                         }).show();
-                return true;
+                //return false;
             }
         });
         handleIntent(getIntent());
