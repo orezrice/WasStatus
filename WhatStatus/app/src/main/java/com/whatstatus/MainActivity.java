@@ -205,10 +205,10 @@ public class MainActivity extends AppCompatActivity {
 
             HashMap<String, String> reqData = new HashMap<String, String>();
 
-            reqData.put("cardId", tagNumber + "");
+            reqData.put("cardNumber", tagNumber + "");
             reqData.put("token", FirebaseInstanceId.getInstance().getToken());
 
-            new HttpRequest("updateListById", reqData, "http://socialchat.16mb.com/api.php").execute();
+            new HttpRequest("updateListByNumber", reqData, "http://socialchat.16mb.com/api.php").execute();
 
             PeopleDAL.getInstance(getApplicationContext()).moveToPresent(tagNumber + "", true);
 
