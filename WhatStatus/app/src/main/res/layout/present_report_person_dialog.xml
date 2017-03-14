@@ -67,12 +67,6 @@
             android:maxLength="7"
             android:textColor="@android:color/black"
             android:inputType="textAutoCorrect" />
-        <Button
-            android:layout_alignEnd="@id/edtReport"
-            android:id="@+id/btnReport"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="דווח"/>
 
     </RelativeLayout>
 

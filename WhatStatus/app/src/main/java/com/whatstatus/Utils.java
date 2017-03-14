@@ -81,6 +81,13 @@ public class Utils {
 
     }
 
+    public static Bitmap convertStringToBitmap(String base64String) {
+        byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
+
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    }
+
+
     public static void loadList(){
         ArrayList<People> peopleArr = PeopleDAL.getInstance(MainActivity.getInstance().getApplicationContext()).getAll();
         LinkedList<People> inHouseList = new LinkedList<>();
