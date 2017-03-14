@@ -4,9 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import java.util.HashMap;
 
 public class ReportShelterActivity extends AppCompatActivity {
 
@@ -22,27 +27,22 @@ public class ReportShelterActivity extends AppCompatActivity {
 
     public void sendButtonClicked(View v) {
         sendReportToServer(reportEditText.getText().toString());
+        finish();
     }
 
     public void sendReportToServer(String report) {
-        //TODO: Add some real implemtation to send report to server
+        setResult(Activity.RESULT_OK, new Intent());
+        Log.d("check", "sendReportToServer");
         Toast.makeText(this, "Sent Report: " + report, Toast.LENGTH_SHORT).show();
-        goBackToMainPage();
-    }
 
-    public void goBackToMainPage() {
+        HashMap<String, String> reqData = new HashMap<String, String>();
 
-        //TODO: boolean indication report actually added to database
-        boolean successAddingReport = true;
-        Intent returnIntent = new Intent();
-        if(successAddingReport) {
-            setResult(Activity.RESULT_OK, returnIntent);
+        reqData.put("token", FirebaseInstanceId.getInstance().getToken());
+        reqData.put("reportType", "2");
+        reqData.put("reportInfo", report);
 
-        } else {
-            setResult(Activity.RESULT_CANCELED, returnIntent);
-        }
+        new HttpRequest("addReport", reqData, "http://socialchat.16mb.com/api.php").execute();
 
-        finish();
     }
 
 
