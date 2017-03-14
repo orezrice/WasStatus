@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.support.design.widget.FloatingActionButton;
@@ -20,8 +21,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -29,17 +35,21 @@ import com.whatstatus.DAL.PeopleDAL;
 import com.whatstatus.Models.Generals;
 import com.whatstatus.Models.People;
 
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import android.Manifest;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private static MainActivity m_instance = null;
     private NfcAdapter mNfcAdapter;
 
     public ListView inHouse;
     public ListView outHouse;
+
+    public TextView inHouseStatus;
+    public TextView outHouseStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(com.whatstatus.R.layout.activity_main);
 
-        startActivity(new Intent(this, ExpandbleListViewExample.class));
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
@@ -68,43 +77,15 @@ public class MainActivity extends AppCompatActivity {
 
         inHouse = (ListView) findViewById(R.id.inhouselist);
         outHouse = (ListView) findViewById(R.id.outhouselist);
+        outHouse.setOnItemClickListener(this);
+
+        inHouseStatus = (TextView) findViewById(R.id.inHouseStatus);
+        outHouseStatus = (TextView) findViewById(R.id.outHouseStatus);
 
         ((FloatingActionButton)findViewById(R.id.fab)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.add_by_id_dialog,null);
-                final EditText edit = (EditText)dialogView.findViewById(R.id.input);
-
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("מספר אישי:")
-                        .setView(dialogView)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String cardNumber = edit.getText().toString();
-
-                                HashMap<String, String> reqData = new HashMap<String, String>();
-
-                                reqData.put("cardNumber", cardNumber);
-                                reqData.put("token", FirebaseInstanceId.getInstance().getToken());
-
-                                new HttpRequest("updateListByNumber", reqData, "http://socialchat.16mb.com/api.php").execute();
-
-                                PeopleDAL.getInstance(getApplicationContext()).moveToPresent(cardNumber, false);
-
-                                Utils.loadList();
-
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).show();
-                //return false;
+                fabClick(v);
             }
         });
 
@@ -121,6 +102,43 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(com.whatstatus.R.menu.app_menu, menu);
         return true;
     }
+
+    public void fabClick(View v) {
+        LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.add_by_id_dialog,null);
+        final EditText edit = (EditText)dialogView.findViewById(R.id.input);
+
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("מספר אישי:")
+                .setView(dialogView)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String cardNumber = edit.getText().toString();
+
+                        HashMap<String, String> reqData = new HashMap<String, String>();
+
+                        reqData.put("cardNumber", cardNumber);
+                        reqData.put("token", FirebaseInstanceId.getInstance().getToken());
+
+                        new HttpRequest("updateListByNumber", reqData, "http://socialchat.16mb.com/api.php").execute();
+
+                        PeopleDAL.getInstance(getApplicationContext()).moveToPresent(cardNumber, false);
+
+                        Utils.loadList();
+
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+        //return false;
+    }
+
 
     /**
      * define events for each menu click
@@ -145,7 +163,10 @@ public class MainActivity extends AppCompatActivity {
             case com.whatstatus.R.id.message:
                 authenticationIntent.putExtra(Generals.REQUEST_TYPE, Generals.SEND_MESSAGE_ACTION);
                 startActivityForResult(authenticationIntent, Generals.SEND_MESSAGE_ACTION);
-
+                return true;
+            case R.id.logisticReport:
+                startActivityForResult(new Intent(this, ReportShelterActivity.class),
+                        Generals.REPORT_LOGISTIC_ACTION );
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -155,6 +176,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("request code", requestCode + "");
+        Log.d("result code", resultCode + "");
+        Log.d("data code", data + "");
+
 
         if(resultCode == Activity.RESULT_OK){
             switch (requestCode){
@@ -184,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     break;
+                case Generals.REPORT_LOGISTIC_ACTION:
+
             }
         } else {
             Toast.makeText(this, "בעיה בהתחברות!", Toast.LENGTH_SHORT).show();
@@ -205,10 +232,10 @@ public class MainActivity extends AppCompatActivity {
 
             HashMap<String, String> reqData = new HashMap<String, String>();
 
-            reqData.put("cardNumber", tagNumber + "");
+            reqData.put("cardId", tagNumber + "");
             reqData.put("token", FirebaseInstanceId.getInstance().getToken());
 
-            new HttpRequest("updateListByNumber", reqData, "http://socialchat.16mb.com/api.php").execute();
+            new HttpRequest("updateListById", reqData, "http://socialchat.16mb.com/api.php").execute();
 
             PeopleDAL.getInstance(getApplicationContext()).moveToPresent(tagNumber + "", true);
 
@@ -266,5 +293,61 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
+
+        People person = (People) adapterView.getItemAtPosition(index);
+
+        LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.present_report_person_dialog,null);
+
+        final TextView txtName = (TextView) dialogView.findViewById(R.id.txtfullname),
+                cardNumber = (TextView) dialogView.findViewById(R.id.txtcardnumber);
+
+        final ImageView imgView = (ImageView) dialogView.findViewById(R.id.imgpicture);
+
+        final TextView phoneNumber = (TextView) dialogView.findViewById(R.id.txtPhoneNumber);
+
+        final Button reportButton = (Button) dialogView.findViewById(R.id.btnReport);
+
+
+        txtName.setText(person.getFirstName() + " " + person.getLastName());
+        cardNumber.setText(person.getCardId());
+        //imgView.setImageBitmap(Utils.makeImageRounded(Utils.convertImageToSring(R.drawable.noimage)));
+
+
+
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("מספר אישי:")
+                .setView(dialogView)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        /*String cardNumber = edit.getText().toString();
+
+                        HashMap<String, String> reqData = new HashMap<String, String>();
+
+                        reqData.put("token", FirebaseInstanceId.getInstance().getToken());
+                        reqData.put("reportType", "0");
+
+                        new HttpRequest("updateListByNumber", reqData, "http://socialchat.16mb.com/api.php").execute();
+
+                        PeopleDAL.getInstance(getApplicationContext()).moveToPresent(cardNumber, false);
+
+                        Utils.loadList();*/
+
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+        //return false;
+
     }
 }

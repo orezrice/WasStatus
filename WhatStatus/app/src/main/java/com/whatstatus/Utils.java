@@ -2,8 +2,14 @@ package com.whatstatus;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.os.AsyncTask;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.ListView;
 
 import com.whatstatus.DAL.PeopleDAL;
@@ -17,14 +23,15 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 /**
  * Created by User on 12/03/2017.
  */
 public class Utils {
-    public static ListAdapter inHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<ListItem>());
-    public static ListAdapter outHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<ListItem>());
+    public static ListAdapter inHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<People>());
+    public static ListAdapter outHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<People>());
 
     public static void initializePeopleData() {
         new HttpRequest("getAbsenceList",
@@ -76,31 +83,33 @@ public class Utils {
 
     public static void loadList(){
         ArrayList<People> peopleArr = PeopleDAL.getInstance(MainActivity.getInstance().getApplicationContext()).getAll();
-        LinkedList<ListItem> inHouseList = new LinkedList<ListItem>();
-        LinkedList<ListItem> outHouseList = new LinkedList<ListItem>();
+        LinkedList<People> inHouseList = new LinkedList<>();
+        LinkedList<People> outHouseList = new LinkedList<>();
 
         for (People people : peopleArr) {
+            //if(people.getPhoto() == null || people.getPhoto().isEmpty())
+            people.setPhoto(convertImageToSring(R.drawable.noimage));
+
             if (people.getIsPresentAndSafe() == 0) {
-                outHouseList.add(new ListItem(
-                        people.getFirstName() + " " + people.getLastName(),
-                        convertImageToSring(R.drawable.noimage)
-                ));
+                outHouseList.add(people);
             } else {
-                inHouseList.add(new ListItem(
-                        people.getFirstName() + " " + people.getLastName(),
-                        convertImageToSring(R.drawable.noimage)
-                ));
+                inHouseList.add(people);
             }
         }
 
-        inHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<ListItem>());
-        outHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<ListItem>());
+        inHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<People>());
+        outHouseAdapter = new ListAdapter(MainActivity.getInstance().getApplicationContext(), new LinkedList<People>());
 
         inHouseAdapter.addAll(inHouseList);
         outHouseAdapter.addAll(outHouseList);
 
         MainActivity.getInstance().inHouse.setAdapter(inHouseAdapter);
         MainActivity.getInstance().outHouse.setAdapter(outHouseAdapter);
+
+
+        MainActivity.getInstance().inHouseStatus.setText("נוכחים (" +inHouseList.size() + ")");
+        MainActivity.getInstance().outHouseStatus.setText("חסרים (" +outHouseList.size() + ")");
+
 
         inHouseAdapter.notifyDataSetChanged();
         outHouseAdapter.notifyDataSetChanged();
@@ -136,6 +145,16 @@ public class Utils {
         }
 
         return (false);
+    }
+
+    public static Bitmap makeImageRounded(Bitmap mbitmap){
+        Bitmap imageRounded = Bitmap.createBitmap(mbitmap.getWidth(), mbitmap.getHeight(), mbitmap.getConfig());
+        Canvas canvas = new Canvas(imageRounded);
+        Paint mpaint = new Paint();
+        mpaint.setAntiAlias(true);
+        mpaint.setShader(new BitmapShader(mbitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+        canvas.drawRoundRect((new RectF(0, 0, mbitmap.getWidth(), mbitmap.getHeight())), mbitmap.getWidth(), mbitmap.getHeight(), mpaint);// Round Image Corner 100 100 100 100
+        return imageRounded;
     }
 }
 

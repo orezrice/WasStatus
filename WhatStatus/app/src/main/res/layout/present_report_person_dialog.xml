@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layoutDirection="rtl"
+    android:padding="20dp">
+
+
+    <TextView
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ישראל ישראלי"
+        android:gravity="center"
+        style="@style/Base.TextAppearance.AppCompat.Display1"
+        android:id="@+id/txtfullname"
+        />
+
+    <TextView
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtfullname"
+        android:gravity="center"
+        android:id="@+id/txtcardnumber"
+        android:text="1234567"
+        />
+
+    <!-- Image is rounded in runtime -->
+    <ImageView
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txtcardnumber"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/noimage"
+        android:id="@+id/imgpicture"
+        />
+
+    <TableLayout
+        android:layout_margin="5dp"
+        android:layout_gravity="center_vertical"
+        android:layout_below="@id/imgpicture"
+        android:layout_width="match_parent"
+        android:id="@+id/tblDetails"
+        android:layout_height="wrap_content">
+        <TableRow  android:layout_margin="10dp"
+            >
+            <TextView android:text="טלפון:" android:layout_marginEnd="20dp"/>
+            <TextView android:id="@+id/txtPhoneNumber" android:text="050-000-0000"/>
+        </TableRow>
+
+
+    </TableLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/tblDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/edtReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="דיווח"
+            android:layout_marginStart="8dp"
+            android:imeOptions="actionDone"
+            android:maxLength="7"
+            android:textColor="@android:color/black"
+            android:inputType="textAutoCorrect" />
+        <Button
+            android:layout_alignEnd="@id/edtReport"
+            android:id="@+id/btnReport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="דווח"/>
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

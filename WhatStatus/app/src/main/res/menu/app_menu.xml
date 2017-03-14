@@ -8,10 +8,15 @@
         android:icon="@android:drawable/ic_menu_rotate"/>
     <item android:id="@+id/clear"
         android:title="אפס"
-        android:icon="@android:drawable/ic_menu_delete"
-        />
+
+        android:icon="@android:drawable/ic_menu_delete"/>
     <item android:id="@+id/message"
+
         android:icon="@android:drawable/ic_menu_send"
         android:title="שלח הודעה לחסרים" />
+    <item android:id="@+id/logisticReport"
+
+        android:icon="@android:drawable/ic_menu_upload"
+        android:title="דיווח על המקלט"/>
 
 </menu>

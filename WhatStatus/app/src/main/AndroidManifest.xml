@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.whatstatus">
+    package="com.whatstatus" >
 
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,8 +16,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme" >
+        <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,20 +40,22 @@
         <activity android:name=".NfcDisabledActivity" />
         <activity android:name=".AuthenticationActivity" />
 
-        <service android:name=".FCM.DataManagementService">
+        <service android:name=".FCM.DataManagementService" >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service
             android:name=".FCM.TokenManagementService"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-        <activity android:name=".ExpandbleListViewExample"></activity>
+        <activity android:name=".ExpandbleListViewExample" />
+        <activity android:name=".ReportShelterActivity" >
+        </activity>
     </application>
 
 </manifest>

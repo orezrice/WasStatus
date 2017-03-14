@@ -9,6 +9,8 @@ public class Generals {
 
     public static final int SEND_MESSAGE_ACTION = 2;
 
+    public static final int REPORT_LOGISTIC_ACTION = 3;
+
     public static final String REQUEST_TYPE = "request";
 
     public static final String HOGER_NUMBER = "id";

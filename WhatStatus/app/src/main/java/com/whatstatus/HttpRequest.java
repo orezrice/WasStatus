@@ -41,7 +41,6 @@ public class HttpRequest {
         }
 
         reqData.put("token", FirebaseInstanceId.getInstance().getToken());
-
         this.setAction(reqAction);
         this.setData(reqData);
         this.setUrl(reqUrl);
@@ -100,6 +99,7 @@ public class HttpRequest {
             URL url;
             String response = "";
             try {
+                Log.d("requst server", "request server");
                 StringBuffer strUrl = new StringBuffer(getUrl() + "?action=" + getAction() + "&");
 
                 for (String key : getData().keySet()) {
@@ -107,7 +107,7 @@ public class HttpRequest {
                 }
 
                 url = new URL(strUrl.substring(0, strUrl.length() - 1));
-
+                Log.d("url", url.toString());
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
                 /*conn.setReadTimeout(15000);
