@@ -37,6 +37,8 @@ import com.whatstatus.Models.People;
 
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import android.Manifest;
 
@@ -336,11 +338,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         final String report = reportDetail.getText().toString();
                         Toast.makeText(MainActivity.this, "עודכן!", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
+                        String currentDateandTime = new SimpleDateFormat("HH:mm:ss").format(new Date());
                         HashMap<String, String> reqData = new HashMap<String, String>();
 
                         reqData.put("token", FirebaseInstanceId.getInstance().getToken());
                         reqData.put("reportType", "1");
                         reqData.put("reportInfo", report);
+                        reqData.put("timeStamp", currentDateandTime);
 
                         new HttpRequest("addReport", reqData, "http://socialchat.16mb.com/api.php").execute();
                     }

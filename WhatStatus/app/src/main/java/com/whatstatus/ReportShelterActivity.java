@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 public class ReportShelterActivity extends AppCompatActivity {
@@ -38,12 +40,13 @@ public class ReportShelterActivity extends AppCompatActivity {
         setResult(Activity.RESULT_OK, new Intent());
         Log.d("check", "sendReportToServer");
         Toast.makeText(this, "דיווח נשלח", Toast.LENGTH_SHORT).show();
-
+        String currentDateandTime = new SimpleDateFormat("HH:mm:ss").format(new Date());
         HashMap<String, String> reqData = new HashMap<String, String>();
 
         reqData.put("token", FirebaseInstanceId.getInstance().getToken());
         reqData.put("reportType", "2");
         reqData.put("reportInfo", report);
+        reqData.put("timeStamp", currentDateandTime);
 
         new HttpRequest("addReport", reqData, "http://socialchat.16mb.com/api.php").execute();
 
