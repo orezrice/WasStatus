@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         final EditText edit = (EditText)dialogView.findViewById(R.id.input);
 
         new AlertDialog.Builder(MainActivity.this)
-                .setTitle("מספר אישי:")
                 .setView(dialogView)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
@@ -298,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
 
-        People person = (People) adapterView.getItemAtPosition(index);
+        final People person = (People) adapterView.getItemAtPosition(index);
 
         LayoutInflater inflater = MainActivity.this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.present_report_person_dialog,null);
@@ -310,33 +309,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         final TextView phoneNumber = (TextView) dialogView.findViewById(R.id.txtPhoneNumber);
 
-        final Button reportButton = (Button) dialogView.findViewById(R.id.btnReport);
-
+        final EditText reportDetail = (EditText) dialogView.findViewById(R.id.edtReport);
 
         txtName.setText(person.getFirstName() + " " + person.getLastName());
         cardNumber.setText(person.getCardId());
-        //imgView.setImageBitmap(Utils.makeImageRounded(Utils.convertImageToSring(R.drawable.noimage)));
+        imgView.setImageBitmap(
+                Utils.makeImageRounded(
+                        Utils.convertStringToBitmap(
+                                Utils.convertImageToSring(R.drawable.noimage))));
 
 
+        if(!person.getPhoneNumber().isEmpty())
+            phoneNumber.setText(person.getPhoneNumber().substring(0,2) +
+                "-" + person.getPhoneNumber().substring(3,5) +
+                "-" + person.getPhoneNumber().substring(6,9));
+        else
+            phoneNumber.setText("-");
 
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle("מספר אישי:")
                 .setView(dialogView)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton("עדכן מצב", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        /*String cardNumber = edit.getText().toString();
+                        //TODO: implement sending report to server
+                        final String personID = person.getCardId();
+                        final String report = reportDetail.getText().toString();
 
-                        HashMap<String, String> reqData = new HashMap<String, String>();
+                        //TODO: add real success check
+                        boolean success = Math.random() > 0.5d;
 
-                        reqData.put("token", FirebaseInstanceId.getInstance().getToken());
-                        reqData.put("reportType", "0");
-
-                        new HttpRequest("updateListByNumber", reqData, "http://socialchat.16mb.com/api.php").execute();
-
-                        PeopleDAL.getInstance(getApplicationContext()).moveToPresent(cardNumber, false);
-
-                        Utils.loadList();*/
+                        if(success) Toast.makeText(MainActivity.this, "עודכן!", Toast.LENGTH_SHORT).show();
+                        else Toast.makeText(MainActivity.this, "מצטערים, העדכון נכשל!", Toast.LENGTH_SHORT).show();
 
                         dialog.dismiss();
                     }
@@ -347,7 +351,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         dialog.dismiss();
                     }
                 }).show();
-        //return false;
-
     }
 }
