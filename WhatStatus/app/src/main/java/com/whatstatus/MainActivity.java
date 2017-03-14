@@ -320,9 +320,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         if(!person.getPhoneNumber().isEmpty())
-            phoneNumber.setText(person.getPhoneNumber().substring(0,2) +
-                "-" + person.getPhoneNumber().substring(3,5) +
-                "-" + person.getPhoneNumber().substring(6,9));
+            phoneNumber.setText(person.getPhoneNumber().substring(0,3) +
+                "-" + person.getPhoneNumber().substring(3,6) +
+                "-" + person.getPhoneNumber().substring(6,10));
         else
             phoneNumber.setText("-");
 
