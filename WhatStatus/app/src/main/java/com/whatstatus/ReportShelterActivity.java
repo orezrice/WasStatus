@@ -37,7 +37,7 @@ public class ReportShelterActivity extends AppCompatActivity {
     public void sendReportToServer(String report) {
         setResult(Activity.RESULT_OK, new Intent());
         Log.d("check", "sendReportToServer");
-        Toast.makeText(this, "Sent Report: " + report, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "דיווח נשלח", Toast.LENGTH_SHORT).show();
 
         HashMap<String, String> reqData = new HashMap<String, String>();
 

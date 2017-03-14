@@ -25,16 +25,17 @@
         android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/logisticReport"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ונשלח"
+        android:text="שלח"
         android:id="@+id/sendReport"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:hint="דיווח" />
+        android:hint="דיווח"
+        android:layout_below="@+id/logisticReport"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

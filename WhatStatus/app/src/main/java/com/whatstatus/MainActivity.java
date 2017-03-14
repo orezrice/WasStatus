@@ -209,7 +209,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                     break;
                 case Generals.REPORT_LOGISTIC_ACTION:
-
+                    break;
+                default:
+                    break;
             }
         } else {
             Toast.makeText(this, "בעיה בהתחברות!", Toast.LENGTH_SHORT).show();
@@ -327,22 +329,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             phoneNumber.setText("-");
 
         new AlertDialog.Builder(MainActivity.this)
-                .setTitle("מספר אישי:")
                 .setView(dialogView)
                 .setPositiveButton("עדכן מצב", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //TODO: implement sending report to server
-                        final String personID = person.getCardId();
                         final String report = reportDetail.getText().toString();
-
-                        //TODO: add real success check
-                        boolean success = Math.random() > 0.5d;
-
-                        if(success) Toast.makeText(MainActivity.this, "עודכן!", Toast.LENGTH_SHORT).show();
-                        else Toast.makeText(MainActivity.this, "מצטערים, העדכון נכשל!", Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(MainActivity.this, "עודכן!", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
+                        HashMap<String, String> reqData = new HashMap<String, String>();
+
+                        reqData.put("token", FirebaseInstanceId.getInstance().getToken());
+                        reqData.put("reportType", "1");
+                        reqData.put("reportInfo", report);
+
+                        new HttpRequest("addReport", reqData, "http://socialchat.16mb.com/api.php").execute();
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
