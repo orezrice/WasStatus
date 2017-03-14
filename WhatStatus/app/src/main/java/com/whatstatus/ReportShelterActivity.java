@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,11 +24,14 @@ public class ReportShelterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_report_shelter);
 
         reportEditText = (EditText) findViewById(R.id.logisticReport);
-    }
-
-    public void sendButtonClicked(View v) {
-        sendReportToServer(reportEditText.getText().toString());
-        finish();
+        Button sendReport = (Button)findViewById(R.id.sendReport);
+        sendReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendReportToServer(reportEditText.getText().toString());
+                finish();
+            }
+        });
     }
 
     public void sendReportToServer(String report) {
